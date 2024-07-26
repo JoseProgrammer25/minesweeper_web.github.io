@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('#game-container');
+    const toggleFlagModeButton = document.querySelector('#toggleFlagMode');
     const width = 10; // Ancho del tablero
     const numMines = 20; // Número de minas
     let cells = [];
     let isGameOver = false;
     let flags = 0;
+    let isFlagMode = false; // Modo de marcar minas
 
     // Crear el tablero
     function createBoard() {
@@ -25,16 +27,20 @@ document.addEventListener('DOMContentLoaded', () => {
             // Añadir contenido basado en el array barajado
             cell.classList.add(shuffledArray[i]);
 
+            // Evento de clic para marcar/bandera o revelar
+            cell.addEventListener('click', function(e) {
+                if (isFlagMode) {
+                    addFlag(cell);
+                } else {
+                    click(cell);
+                }
+            });
+
             // Evento de clic derecho para marcar/bandera
             cell.oncontextmenu = function(e) {
                 e.preventDefault();
                 addFlag(cell);
-            }
-
-            // Evento de clic izquierdo para revelar
-            cell.addEventListener('click', function() {
-                click(cell);
-            });
+            };
         }
 
         // Añadir números a las celdas vacías
@@ -65,13 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 cell.classList.add('flag');
                 cell.innerHTML = '🚩';
                 flags++;
-                checkForWin();
             } else {
                 cell.classList.remove('flag');
                 cell.innerHTML = '';
                 flags--;
             }
         }
+        checkForWin();
     }
 
     // Click en la celda
@@ -94,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cell.classList.add('revealed');
     }
 
-    // Revelar celda
+    // Revelar celdas adyacentes
     function revealCell(cell, currentId) {
         const isLeftEdge = (currentId % width === 0);
         const isRightEdge = (currentId % width === width - 1);
@@ -169,6 +175,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+
+    // Alternar entre el modo de marcar minas y el modo de revelar celdas
+    toggleFlagModeButton.addEventListener('click', () => {
+        isFlagMode = !isFlagMode;
+        toggleFlagModeButton.textContent = isFlagMode ? 'Modo Revelar' : 'Modo Marcar Minas';
+    });
 
     createBoard();
 });

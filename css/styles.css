@@ -24,23 +24,31 @@ h1 {
     width: 40px;
     height: 40px;
     background-color: #ddd;
-    border: 1px solid #bbb;
+    border: 2px solid #bbb;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 20px;
     cursor: pointer;
+    box-shadow: inset -2px -2px 5px rgba(255, 255, 255, 0.5),
+                inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s, box-shadow 0.2s;
 }
 
 .cell.revealed {
     background-color: #eee;
     cursor: default;
+    box-shadow: none;
+    border: 2px solid #ddd;
 }
 
 .cell.mine.revealed {
     background-color: red;
+    color: white;
 }
 
 .cell.flag {
     background-color: yellow;
+    box-shadow: inset -2px -2px 5px rgba(255, 255, 255, 0.5),
+                inset 2px 2px 5px rgba(0, 0, 0, 0.1);
 }

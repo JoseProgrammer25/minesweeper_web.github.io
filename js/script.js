@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const emptyArray = Array(width * width - numMines).fill('empty');
         const gameArray = emptyArray.concat(minesArray);
         const shuffledArray = gameArray.sort(() => Math.random() - 0.5);
+        document.getElementById('botonReset').style.display = 'none';
 
         // Crear las celdas
         for (let i = 0; i < width * width; i++) {
@@ -158,7 +159,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 cell.classList.add('revealed');
             }
         });
+        document.getElementById('botonReset').style.display = 'block';
         alert('Game Over! 😢');
+
+        botonReset.addEventListener('click', () => {
+            location.reload();
+        })
     }
 
     // Verificar victoria
@@ -171,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (matches === numMines) {
                 isGameOver = true;
                 alert('Congratulations! You Win! 🎉');
+                document.getElementById('botonReset').style.display = 'none';
                 break;
             }
         }

@@ -10,29 +10,6 @@ body {
     text-align: center;
 }
 
-@media screen and (max-width:600px) {
-    #game-container { 
-        display: grid;
-        grid-template-columns: repeat(10, 30px);
-        grid-gap: 1px;
-    }
-    
-    .cell {
-        width: 30px;
-        height: 30px;
-        background-color: #ddd;
-        border: 1px solid #bbb;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        cursor: pointer;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 
-                    inset 0 -2px 3px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
-    }
-}
-
 #game-container { 
     display: grid;
     grid-template-columns: repeat(10, 40px);
@@ -75,10 +52,24 @@ body {
 .cell.flag {
     background-color: yellow;
 }
+
 #toggleFlagMode {
     margin-bottom: 20px;
 }
 
 #botonReset {
     margin-top: 20px;
+}
+
+/* Estilos específicos para pantallas de tamaño móvil */
+@media (max-width: 600px) {
+    #game-container { 
+        grid-template-columns: repeat(10, 30px);
+    }
+
+    .cell {
+        width: 30px;
+        height: 30px;
+        font-size: 15px;
+    }
 }

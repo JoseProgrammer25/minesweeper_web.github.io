@@ -62,7 +62,7 @@ body {
 }
 
 /* Estilos específicos para pantallas de tamaño móvil */
-@media (max-width: 600px) {
+@media (max-width: 500px) {
     #game-container { 
         grid-template-columns: repeat(10, 30px);
     }

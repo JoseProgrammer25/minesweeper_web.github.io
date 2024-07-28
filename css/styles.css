@@ -10,6 +10,7 @@ body {
     text-align: center;
 }
 
+/* Estilos generales */
 #game-container { 
     display: grid;
     grid-template-columns: repeat(10, 40px);
@@ -61,15 +62,14 @@ body {
     margin-top: 20px;
 }
 
-/* Estilos específicos para pantallas de tamaño móvil */
-@media (max-width: 500px) {
-    #game-container { 
-        grid-template-columns: repeat(10, 30px);
-    }
-
-    .cell {
-        width: 30px;
-        height: 30px;
-        font-size: 15px;
-    }
+/* Estilos para pantallas pequeñas */
+.small-screen #game-container { 
+    grid-template-columns: repeat(10, 30px);
 }
+
+.small-screen .cell {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+}
+

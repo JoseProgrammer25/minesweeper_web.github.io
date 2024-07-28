@@ -189,5 +189,21 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleFlagModeButton.textContent = isFlagMode ? 'Modo Revelar' : 'Modo Marcar Minas';
     });
 
+    // Mirar si la pantalla es mas grande o pequeña y adaptar el tablero de juego
+    function adjustGameBoardSize() {
+        const body = document.body;
+        if (window.innerWidth <= 600) {
+            body.classList.add('small-screen');
+        } else {
+            body.classList.remove('small-screen');
+        }
+    }
+
+    // Ajustar el tamaño del tablero al cargar la página
+    adjustGameBoardSize();
+
+    // Ajustar el tamaño del tablero al cambiar el tamaño de la ventana
+    window.addEventListener('resize', adjustGameBoardSize);
+
     createBoard();
 });

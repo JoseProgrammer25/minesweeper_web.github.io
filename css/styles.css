@@ -1,4 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+DK+Loopet:wght@100..400&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+
 body {
+    background-color: rgb(206, 240, 168);
+    font-family: "Playwrite DK Loopet";
+}
+
+#juego {
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
@@ -10,11 +18,20 @@ body {
     text-align: center;
 }
 
+#tituloJuego{
+    display: flex;
+    flex-direction:column-reverse;
+    align-items: center;
+}
+
 /* Estilos generales */
 #game-container { 
     display: grid;
     grid-template-columns: repeat(10, 40px);
     grid-gap: 1px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 .cell {
@@ -56,10 +73,16 @@ body {
 
 #toggleFlagMode {
     margin-bottom: 20px;
+    font-family: "Playwrite DK Loopet";
+    font-size: 16px;
 }
 
 #botonReset {
     margin-top: 20px;
+    font-family: "Playwrite DK Loopet";
+    font-size: 16px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Estilos para pantallas pequeñas */
@@ -73,3 +96,13 @@ body {
     font-size: 15px;
 }
 
+#antesJuego{
+    text-align: center;
+    
+}
+
+#antesJuego  button{
+    font-family: "Playwrite DK Loopet";
+    font-size: 16px;
+    margin: 10px;
+}

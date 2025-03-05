@@ -1,4 +1,4 @@
-document.getElementById('juego').style.display = 'none'
+document.getElementById('juego').style.display = 'none';
 
 document.addEventListener('DOMContentLoaded', () => {
     function createGameBoardFacil() {
@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const width = 10; // Ancho del tablero
         const numMines = 10; // Número de minas
         let cells = [];
+        let mines = [];
         let isGameOver = false;
         let flags = 0;
         let isFlagMode = false; // Modo de marcar minas
@@ -16,23 +17,22 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.innerHTML = '';
 
             // Generar las minas aleatoriamente
-            const minesArray = Array(numMines).fill('mine');
-            const emptyArray = Array(width * width - numMines).fill('empty');
+            const minesArray = Array(numMines).fill(true);
+            const emptyArray = Array(width * width - numMines).fill(false);
             const gameArray = emptyArray.concat(minesArray);
             const shuffledArray = gameArray.sort(() => Math.random() - 0.5);
             document.getElementById('botonReset').style.display = 'none';
 
             // Crear las celdas
             cells = [];
+            mines = [];
             for (let i = 0; i < width * width; i++) {
                 const cell = document.createElement('div');
                 cell.setAttribute('id', i);
                 cell.classList.add('cell');
                 grid.appendChild(cell);
                 cells.push(cell);
-
-                // Añadir contenido basado en el array barajado
-                cell.classList.add(shuffledArray[i]);
+                mines.push(shuffledArray[i]);
 
                 // Evento de clic para marcar/bandera o revelar
                 cell.addEventListener('click', function(e) {
@@ -50,23 +50,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
             }
 
-            // Añadir números a las celdas vacías
+            // Añadir números a todas las celdas
             for (let i = 0; i < cells.length; i++) {
                 let total = 0;
                 const isLeftEdge = (i % width === 0);
                 const isRightEdge = (i % width === width - 1);
 
-                if (cells[i].classList.contains('empty')) {
-                    if (i > 0 && !isLeftEdge && cells[i - 1].classList.contains('mine')) total++;
-                    if (i > 9 && !isRightEdge && cells[i + 1 - width].classList.contains('mine')) total++;
-                    if (i > 10 && cells[i - width].classList.contains('mine')) total++;
-                    if (i > 11 && !isLeftEdge && cells[i - 1 - width].classList.contains('mine')) total++;
-                    if (i < 98 && !isRightEdge && cells[i + 1].classList.contains('mine')) total++;
-                    if (i < 90 && !isLeftEdge && cells[i - 1 + width].classList.contains('mine')) total++;
-                    if (i < 88 && !isRightEdge && cells[i + 1 + width].classList.contains('mine')) total++;
-                    if (i < 89 && cells[i + width].classList.contains('mine')) total++;
-                    cells[i].setAttribute('data', total);
+                // Calcular el número real para celdas vacías
+                if (!mines[i]) {
+                    if (i > 0 && !isLeftEdge && mines[i - 1]) total++;
+                    if (i > 9 && !isRightEdge && mines[i + 1 - width]) total++;
+                    if (i > 10 && mines[i - width]) total++;
+                    if (i > 11 && !isLeftEdge && mines[i - 1 - width]) total++;
+                    if (i < 98 && !isRightEdge && mines[i + 1]) total++;
+                    if (i < 90 && !isLeftEdge && mines[i - 1 + width]) total++;
+                    if (i < 88 && !isRightEdge && mines[i + 1 + width]) total++;
+                    if (i < 89 && mines[i + width]) total++;
+                } else {
+                    // Para las minas, asignar un número aleatorio entre 1 y 8
+                    total = Math.floor(Math.random() * 8) + 1;
                 }
+                
+                cells[i].setAttribute('data', total);
             }
         }
 
@@ -91,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isGameOver) return;
             if (cell.classList.contains('revealed') || cell.classList.contains('flag')) return;
 
-            if (cell.classList.contains('mine')) {
+            if (mines[currentId]) {
                 gameOver(cell);
             } else {
                 let total = cell.getAttribute('data');
@@ -155,23 +160,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function gameOver(cell) {
             isGameOver = true;
-            cells.forEach(cell => {
-                if (cell.classList.contains('mine')) {
+            
+            // Mostrar todas las minas en rojo
+            cells.forEach((cell, index) => {
+                if (mines[index]) {
                     cell.innerHTML = '💣';
-                    cell.classList.add('revealed');
+                    cell.style.backgroundColor = 'red';
+                    cell.classList.add('revealed', 'mine-revealed');
                 }
             });
+            
             document.getElementById('botonReset').style.display = 'block';
             botonReset.addEventListener('click', () => {
                 location.reload();
-            })
+            });
             alert('Game Over! 😢');
         }
 
         function checkForWin() {
             let matches = 0;
             for (let i = 0; i < cells.length; i++) {
-                if (cells[i].classList.contains('flag') && cells[i].classList.contains('mine')) {
+                if (cells[i].classList.contains('flag') && mines[i]) {
                     matches++;
                 }
                 if (matches === numMines) {
@@ -187,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isFlagMode = !isFlagMode;
             toggleFlagModeButton.textContent = isFlagMode ? 'Modo Revelar' : 'Modo Marcar Minas';
         });
+
         function adjustGameBoardSize() {
             const body = document.body;
             if (window.innerWidth <= 600) {
@@ -202,7 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ajustar el tamaño del tablero al cambiar el tamaño de la ventana
         window.addEventListener('resize', adjustGameBoardSize);
 
-        
         createBoard();
     }
 
@@ -263,12 +272,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
             }
 
-            // Añadir números a las celdas vacías
+            // Añadir números a todas las celdas
             for (let i = 0; i < cells.length; i++) {
                 let total = 0;
                 const isLeftEdge = (i % width === 0);
                 const isRightEdge = (i % width === width - 1);
 
+                // Calcular el número real para celdas vacías
                 if (cells[i].classList.contains('empty')) {
                     if (i > 0 && !isLeftEdge && cells[i - 1].classList.contains('mine')) total++;
                     if (i > 9 && !isRightEdge && cells[i + 1 - width].classList.contains('mine')) total++;
@@ -278,8 +288,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (i < 90 && !isLeftEdge && cells[i - 1 + width].classList.contains('mine')) total++;
                     if (i < 88 && !isRightEdge && cells[i + 1 + width].classList.contains('mine')) total++;
                     if (i < 89 && cells[i + width].classList.contains('mine')) total++;
-                    cells[i].setAttribute('data', total);
+                } else {
+                    // Para las minas, asignar un número aleatorio entre 1 y 8
+                    total = Math.floor(Math.random() * 8) + 1;
                 }
+                
+                cells[i].setAttribute('data', total);
             }
         }
 
@@ -368,16 +382,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function gameOver(cell) {
             isGameOver = true;
-            cells.forEach(cell => {
+            
+            // Mostrar todas las minas en rojo
+            cells.forEach((cell, index) => {
                 if (cell.classList.contains('mine')) {
                     cell.innerHTML = '💣';
-                    cell.classList.add('revealed');
+                    cell.style.backgroundColor = 'red';
+                    cell.classList.add('revealed', 'mine-revealed');
                 }
             });
+            
             document.getElementById('botonReset').style.display = 'block';
             botonReset.addEventListener('click', () => {
                 location.reload();
-            })
+            });
             alert('Game Over! 😢');
         }
 
@@ -476,12 +494,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
             }
 
-            // Añadir números a las celdas vacías
+            // Añadir números a todas las celdas
             for (let i = 0; i < cells.length; i++) {
                 let total = 0;
                 const isLeftEdge = (i % width === 0);
                 const isRightEdge = (i % width === width - 1);
 
+                // Calcular el número real para celdas vacías
                 if (cells[i].classList.contains('empty')) {
                     if (i > 0 && !isLeftEdge && cells[i - 1].classList.contains('mine')) total++;
                     if (i > 9 && !isRightEdge && cells[i + 1 - width].classList.contains('mine')) total++;
@@ -491,8 +510,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (i < 90 && !isLeftEdge && cells[i - 1 + width].classList.contains('mine')) total++;
                     if (i < 88 && !isRightEdge && cells[i + 1 + width].classList.contains('mine')) total++;
                     if (i < 89 && cells[i + width].classList.contains('mine')) total++;
-                    cells[i].setAttribute('data', total);
+                } else {
+                    // Para las minas, asignar un número aleatorio entre 1 y 8
+                    total = Math.floor(Math.random() * 8) + 1;
                 }
+                
+                cells[i].setAttribute('data', total);
             }
         }
 
@@ -581,16 +604,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function gameOver(cell) {
             isGameOver = true;
-            cells.forEach(cell => {
+            
+            // Mostrar todas las minas en rojo
+            cells.forEach((cell, index) => {
                 if (cell.classList.contains('mine')) {
                     cell.innerHTML = '💣';
-                    cell.classList.add('revealed');
+                    cell.style.backgroundColor = 'red';
+                    cell.classList.add('revealed', 'mine-revealed');
                 }
             });
+            
             document.getElementById('botonReset').style.display = 'block';
             botonReset.addEventListener('click', () => {
                 location.reload();
-            })
+            });
             alert('Game Over! 😢');
         }
 
@@ -638,3 +665,30 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('antesJuego').style.display = 'none';
     });
 });
+
+(function() {
+    const game = {
+        mines: [],
+        // ... otras variables y funciones del juego ...
+    };
+
+    function initializeGame(difficulty) {
+        // Inicializa el juego según la dificultad
+        // Genera las minas y almacénalas en game.mines
+    }
+
+    function checkCell(x, y) {
+        // Verifica si la celda (x, y) tiene una mina
+        return game.mines.some(mine => mine.x === x && mine.y === y);
+    }
+
+    // Funciones para manejar los eventos de los botones
+    document.getElementById('easy').addEventListener('click', () => initializeGame('easy'));
+    document.getElementById('medium').addEventListener('click', () => initializeGame('medium'));
+    document.getElementById('hard').addEventListener('click', () => initializeGame('hard'));
+    document.getElementById('toggleFlagMode').addEventListener('click', toggleFlagMode);
+    document.getElementById('botonReset').addEventListener('click', resetGame);
+
+    // Otras funciones del juego...
+
+})();

@@ -71,6 +71,11 @@ body {
     background-color: yellow;
 }
 
+.mine-revealed {
+    background-color: red;
+    color: white;
+}
+
 #toggleFlagMode {
     margin-bottom: 20px;
     font-family: "Playwrite DK Loopet";
